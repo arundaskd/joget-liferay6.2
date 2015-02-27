@@ -8,13 +8,13 @@ package org.joget.plugin.liferay.util;
  * To change this template use File | Settings | File Templates.
  */
 public class QueryList {
-    public static String COUNT_USER = "SELECT COUNT(*) FROM User_";
-    public static String SELECT_USER_BY_USERNAME = "SELECT * FROM User_ WHERE emailAddress =?";
-    public static String SELECT_USER_BY_USERID = "SELECT * FROM User_ WHERE userId =?";
+    public static String COUNT_USER = "SELECT COUNT(*) FROM User_ WHERE defaultUser = '0'";
+    public static String SELECT_USER_BY_USERNAME = "SELECT * FROM User_ WHERE emailAddress =? AND defaultUser = '0'";
+    public static String SELECT_USER_BY_USERID = "SELECT * FROM User_ WHERE userId =? AND defaultUser = '0'";
 
     public static String SELECT_USER_BY_USERNAME_PWD =
-            "SELECT COUNT(*) FROM User_ WHERE password_=? AND emailAddress=? and status <> ?";
-    public static String SELECT_PWD = "SELECT password_  FROM User_ WHERE emailAddress=?";
+            "SELECT COUNT(*) FROM User_ WHERE password_=? AND emailAddress=? and status <> ? AND defaultUser = '0'";
+    public static String SELECT_PWD = "SELECT password_  FROM User_ WHERE emailAddress=? AND defaultUser = '0'";
     public static String SELECT_ORG_BY_ID = "SELECT *  FROM Organization_  WHERE organizationId =?";
     public static String SELECT_ORG_BY_NAME = "SELECT *  FROM Organization_  WHERE name =?";
 
@@ -36,17 +36,21 @@ public class QueryList {
     public static String SELECT_DEPT_BY_NAME = "SELECT *  FROM Organization_  WHERE name =?";
 
     public static String SELECT_USER_BY_FILTER =
-            "SELECT * FROM User_ WHERE emailAddress LIKE ? OR firstName LIKE ? OR lastName LIKE ?";
+            "SELECT * FROM User_ WHERE defaultUser = '0' AND (emailAddress LIKE ? OR firstName LIKE ? OR lastName LIKE ?)";
 
     public static String SELECT_USER_BY_ORG = "SELECT u.* FROM User_ u WHERE " +
+    		"u.defaultUser = '0' "+
+    		"AND " +
             "(u.emailAddress LIKE ? OR u.firstName LIKE ? OR u.lastName LIKE ?) " +
             "AND " +
             "u.userId IN (SELECT uo.userId FROM Users_Orgs uo WHERE uo.organizationId=?)";
 
     public static String SELECT_USER_BY_COMPANY = "SELECT u.* FROM User_ u " +
-            "WHERE (u.emailAddress LIKE ? OR u.firstName LIKE ? OR u.lastName LIKE ?) AND u.companyId = ? ";
+            "WHERE u.defaultUser = '0' AND (u.emailAddress LIKE ? OR u.firstName LIKE ? OR u.lastName LIKE ?) AND u.companyId = ? ";
 
     public static String SELECT_USER_BY_GRP = "SELECT u.* FROM User_ u WHERE " +
+    		"u.defaultUser = '0' "+
+    		"AND " +
             "(u.emailAddress LIKE ? OR u.firstName LIKE ? OR u.lastName LIKE ?) " +
             "AND " +
             "u.userId IN (SELECT uo.userId FROM Users_UserGroups uo WHERE uo.userGroupId=?)";
@@ -59,7 +63,7 @@ public class QueryList {
             "SELECT c.companyId,a.name FROM Company c,Account_ a,User_ u " +
                     "WHERE c.companyId = a.companyId " +
                     "AND c.companyId = u.companyId " +
-                    "AND u.userId = ?";
+                    "AND u.userId = ? AND u.defaultUser = '0'";
 
     public static String SELECT_GRP_BY_USER =
             "SELECT o.* FROM UserGroup o WHERE (o.name LIKE ? OR o.description LIKE ?) " +
@@ -77,30 +81,30 @@ public class QueryList {
     public static String SELECT_GRP_BY_NAME = "SELECT o.* FROM UserGroup o WHERE o.name = ?";
 
     public static String SELECT_EMP_BY_FILTER = "SELECT u.*, c.contactId, c.employeeNumber FROM User_ u, Contact_ c " +
-            "WHERE u.contactId = c.contactId AND (u.emailAddress LIKE ? OR u.firstName LIKE ? OR u.lastName LIKE ?)";
+            "WHERE u.defaultUser = '0' AND u.contactId = c.contactId AND (u.emailAddress LIKE ? OR u.firstName LIKE ? OR u.lastName LIKE ?)";
 
 //    public static String SELECT_EMP_BY_ORG = "SELECT u.*, c.contactId, c.employeeNumber FROM User_ u, Contact_ c " +
 //            "WHERE u.contactId = c.contactId AND (u.emailAddress LIKE ? OR u.firstName LIKE ? OR u.lastName LIKE ?) AND " +
 //            "u.userId IN (SELECT uo.userId FROM Users_Orgs uo WHERE uo.organizationId = ?)";
 
     public static String SELECT_EMP_BY_DEPT = "SELECT u.*, c.contactId, c.employeeNumber FROM User_ u, Contact_ c " +
-            "WHERE u.contactId = c.contactId AND (u.emailAddress LIKE ? OR u.firstName LIKE ? OR u.lastName LIKE ?) AND " +
+            "WHERE u.defaultUser = '0' AND u.contactId = c.contactId AND (u.emailAddress LIKE ? OR u.firstName LIKE ? OR u.lastName LIKE ?) AND " +
             "u.userId IN (SELECT uo.userId FROM Users_Orgs uo WHERE uo.organizationId = ?)";
 
     public static String SELECT_EMP_BY_ORG_DEPT = "SELECT u.*, c.contactId, c.employeeNumber FROM User_ u, Contact_ c " +
-            "WHERE u.contactId = c.contactId AND (u.emailAddress LIKE ? OR u.firstName LIKE ? OR u.lastName LIKE ?) AND " +
+            "WHERE u.defaultUser = '0' AND u.contactId = c.contactId AND (u.emailAddress LIKE ? OR u.firstName LIKE ? OR u.lastName LIKE ?) AND " +
             "u.userId IN (SELECT uo.userId FROM Users_Orgs uo WHERE uo.organizationId = ?) AND " +
             "u.companyId = ?";
 
     public static String SELECT_EMP_BY_ORG = "SELECT u.*, c.contactId, c.employeeNumber FROM User_ u, Contact_ c " +
-            "WHERE u.contactId = c.contactId AND (u.emailAddress LIKE ? OR u.firstName LIKE ? OR u.lastName LIKE ?) AND " +
+            "WHERE u.defaultUser = '0' AND u.contactId = c.contactId AND (u.emailAddress LIKE ? OR u.firstName LIKE ? OR u.lastName LIKE ?) AND " +
             "u.companyId = ?";
 
     public static String SELECT_EMP = "SELECT u.*, c.contactId, c.employeeNumber FROM User_ u, Contact_ c " +
-            "WHERE u.contactId = c.contactId AND u.contactId = ?";
+            "WHERE u.defaultUser = '0' AND u.contactId = c.contactId AND u.contactId = ?";
 
     public static String SELECT_EMP_BY_USERID = "SELECT u.*, c.contactId, c.employeeNumber FROM User_ u, Contact_ c " +
-            "WHERE u.contactId = c.contactId AND u.userId = ?";
+            "WHERE u.defaultUser = '0' AND u.contactId = c.contactId AND u.userId = ?";
 
     public static String SELECT_COMPANY_BY_ID = "SELECT c.companyId,a.name FROM Company c,Account_ a WHERE " +
             "c.companyId = a.companyId AND c.companyId = ?";
@@ -114,7 +118,7 @@ public class QueryList {
     public static String SELECT_ROLEID_BY_NAME = "SELECT r.roleId FROM Role_ r WHERE r.name = ?";
 
     public static String SELECT_HOD_ID = "SELECT c.contactId FROM User_ u,UserGroupRole ug,Contact_ c " +
-            "WHERE " +
+            "WHERE u.defaultUser = '0' AND" +
             "u.contactId = c.contactId AND " +
             "u.userId = ug.userId AND " +
             "u.userId IN (SELECT userId FROM Users_Orgs WHERE organizationId = ?) AND " +
